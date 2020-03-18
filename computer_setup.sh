@@ -278,14 +278,14 @@ pyenv install 3.8.1
 echo "Set Global Python version to 3.7.6"
 pyenv global 3.7.6
 
-read -r "Do you want to setup projects for Neutron, Positron, and Proton? [y/n]" response
+read -p "Do you want to setup projects for Neutron, Positron, and Proton? [y/n]" response
 
 if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
   echo "Installing project - Neutron"
   echo "Where would you like to clone ORIGIN from?"
-  read -r "(Please insert the full copied URL for the NEUTRON (Proton V2) Project)" neutron_origin
-  read -r "What would you like your remote to be called? (usually your name)" neutron_remote_name
-  read -r "Please insert the full copied URL for your NEUTRON (Proton V2) Project REMOTE" neutron_remote_loc
+  read -p "(Please insert the full copied URL for the NEUTRON (Proton V2) Project)" neutron_origin
+  read -p "What would you like your remote to be called? (usually your name)" neutron_remote_name
+  read -p "Please insert the full copied URL for your NEUTRON (Proton V2) Project REMOTE" neutron_remote_loc
 
   cd "$HOME/Projects"
 
@@ -301,9 +301,9 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     cd "$HOME/Projects"
   fi
 
-  read -r "Please insert the full copied URL for the Positron Project" positron_origin
-  read -r "What would you like your remote to be called? (usually your name)" positron_remote_name
-  read -r "Please insert the full copied URL for your POSITRON Project REMOTE" positron_remote_loc
+  read -p "Please insert the full copied URL for the Positron Project" positron_origin
+  read -p "What would you like your remote to be called? (usually your name)" positron_remote_name
+  read -p "Please insert the full copied URL for your POSITRON Project REMOTE" positron_remote_loc
   git clone "$positron_origin"
   if [[ -d "$HOME/Projects/positron/" ]]; then
     cd "$HOME/Projects/positron/"
@@ -344,7 +344,7 @@ _EOF_
     cd "$HOME/Projects"
   fi
 
-  read -r "Please insert the full copied URL for the Proton (Proton V1) Project" proton_origin
+  read -p "Please insert the full copied URL for the Proton (Proton V1) Project" proton_origin
   git clone "$proton_origin"
   if [[ -d "$HOME/Projects/proton/" ]]; then
     cd "$HOME/Projects/proton/"
@@ -484,7 +484,7 @@ cecho "Setup remotes for all github projects"
 cecho "Create and setup Proton (V1) virtualenv"
 echo ""
 echo ""
-read -r "Check for and install available OSX updates, install, and automatically restart? (y/n)? " response
+read -p "Check for and install available OSX updates, install, and automatically restart? (y/n)? " response
 if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]] ;then
     softwareupdate -i -a --restart
 fi
