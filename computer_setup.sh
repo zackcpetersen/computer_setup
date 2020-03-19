@@ -268,10 +268,10 @@ cd "$HOME/Projects"
 echo "############ Setting up Pyenv ############"
 echo "Installing Python 2.7.3, 3.5.3, 3.7.6, 3.8.1"
 
-pyenv install 2.7.3
-pyenv install 3.5.3
-pyenv install 3.7.6
-pyenv install 3.8.1
+pyenv install 2.7.3 -v
+pyenv install 3.5.3 -v
+pyenv install 3.7.6 -v
+pyenv install 3.8.1 -v
 
 echo "Set Global Python version to 3.7.6"
 pyenv global 3.7.6
