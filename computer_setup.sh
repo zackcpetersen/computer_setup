@@ -201,8 +201,6 @@ brew cask install postman
 ### Command line tools - install new ones, update others to latest version
 brew install git  # upgrade to latest
 brew install tree
-brew link curl --force
-brew install grep --with-default-names
 brew install trash  # move to osx trash instead of rm
 brew install less
 
