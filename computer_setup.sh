@@ -323,7 +323,6 @@ PREPEND_WWW = False
 # PROTON_BASE_URL = 'http://127.0.0.1:7999'
 PROTON_BASE_URL = 'http://proton.neutroninteractive.com'
 LOG_LOCATION = os.environ.get("POSITRON_LOG_LOCATION", "$HOME/Projects/positron/logs")
-SECRET_KEY = '#((l=dr0lm5mb$55ni_vt#_#+xdpd20iykdx_^=-43q9z5pq(q'
 
 DATABASES = {
     'default': {
