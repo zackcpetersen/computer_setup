@@ -246,6 +246,9 @@ git clone git@github.com:zackcpetersen/raspberry_pi.git
 # This very setup script
 git clone git@github.com:zackcpetersen/computer_setup.git
 
+# Custom iterm2 settings
+git clone git@github.com:zackcpetersen/iterm2_settings.git
+
 
 
 ###############################
@@ -437,5 +440,5 @@ echo ""
 echo ""
 read -p "Check for and install available OSX updates, install, and automatically restart? (y/n)? " response
 if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]] ;then
-    softwareupdate -i -a --restart
+    sudo softwareupdate -i -a --restart
 fi
