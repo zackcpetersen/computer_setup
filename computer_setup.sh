@@ -102,36 +102,15 @@ else
 EOT
 fi
 
-#############################################
-### Add ssh-key to GitHub via api
-#############################################
 
-echo "############ Adding ssh-key to GitHub (via api) ############"
-echo "Important! For this step, use a github personal token with the admin:public_key permission."
-echo "If you don't have one, create it here: https://github.com/settings/tokens/new"
-
-retries=3
-SSH_KEY=`cat ~/.ssh/id_rsa.pub`
-
-for ((i=0; i<retries; i++)); do
-      read -p 'GitHub username: ' ghusername
-      read -p 'Machine name: ' ghtitle
-      read -sp 'GitHub personal token: ' ghtoken
-
-      gh_status_code=$(curl -o /dev/null -s -w "%{http_code}\n" -u "$ghusername:$ghtoken" -d '{"title":"'$ghtitle'","key":"'"$SSH_KEY"'"}' 'https://api.github.com/user/keys')
-
-      if (( $gh_status_code -eq == 201))
-      then
-          echo "GitHub ssh key added successfully!"
-          break
-      else
-			echo "Something went wrong. Enter your credentials and try again..."
-     		echo -n "Status code returned: "
-     		echo $gh_status_code
-      fi
-done
-
-[[ $retries -eq i ]] && echo "Adding ssh-key to GitHub failed! Try again later."
+# Copy shh key to clipboard and prompt user to add to their github account
+pbcopy < ~/.ssh/id_rsa.pub
+echo "Your SSH key has been copied to your clipboard!"
+cecho "**********IMPORTANT**********" $red
+echo "Please visit"
+cecho "https://help.github.com/en/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account" $blue
+echo "to add keys to your account! Type yes when ready to continue"
+read -r pause
 
 
 # zsh settings
@@ -142,7 +121,8 @@ brew install zsh
 chsh -s $(which zsh)
 
 ## Install oh my zsh
-#sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+echo ""
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Create .zprofile
 echo "############ Creating .zprofile && adding settings ############"
@@ -157,13 +137,19 @@ export CPPFLAGS="-I/usr/local/opt/openssl/include"
 export PATH=$PATH:/usr/local/Cellar/openssl/1.0.2r/bin/
 export PATH=$PATH:/usr/local/Cellar/postgresql\@9.6/9.6.13/bin/
 
+# Fixing 'Locale Error' - UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
 #Pyenv PATH
 export PATH="~/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 # Setting path for custom shell functions
-export PATH="$PATH:~/Desktop/scripts/"
+export PATH="$PATH:~/Projects/bash_scripts/"
+export PATH="$PATH:~/Projects/computer_setup/"
+export PATH="$PATH:~/Projects/neutron_scripts/"
 
 # PATH for pipenv
 export PATH="$PATH:~/.local/bin"
@@ -179,6 +165,16 @@ alias back="source back"
 
 # alias for history search
 alias hs="history | grep"
+
+# alias for export DJANGO_SETTINGS_MODULE
+alias dj_settings="export DJANGO_SETTINGS_MODULE="
+
+# alias for starting proton tenant_command shell inside pipenv shell
+alias proton_shell="pipenv shell 'python manage.py tenant_command shell --schema=neutron'"
+
+# alias for deleting all migrations in current directory
+alias delete_migrations="find . -path '*/migrations/*.py' -not -name '__init__.py' -delete"
+
 _EOF_
 
 
@@ -197,38 +193,12 @@ brew cask install dash
 brew cask install docker
 brew cask install postman
 
-
-### Command line tools - install new ones, update others to latest version
-brew install git  # upgrade to latest
-brew install tree
-brew install trash  # move to osx trash instead of rm
-brew install less
-
-
-### Python
-brew install python
-brew install pyenv
-brew install pipenv
-
-
 brew cask install pycharm
 brew cask install evernote
-brew cask install ImageOptim  # for optimizing images
-brew cask install wavebox
 brew cask install google-chrome
 brew cask install alfred
-brew cask install skitch  # app to annotate screenshots
 brew cask install flux
 brew cask install slack
-
-
-### Quicklook plugins https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode # syntax highlighting in preview
-brew cask install qlstephen  # preview plaintext files without extension
-brew cask install qlmarkdown  # preview markdown files
-brew cask install quicklook-json  # preview json files
-brew cask install quicklook-csv  # preview csvs
-
 
 ### Run Brew Cleanup
 brew cleanup
@@ -237,14 +207,45 @@ brew cleanup
 pip install virtualenv
 pip install virtualenvwrapper
 
+### Python
+pip3 install python
+pip3 install pyenv
+pip3 install pipenv
 
-#############################################
-### Install few global python packages
-#############################################
+
+######################################
+# Install few global python packages #
+######################################
 
 echo "Installing global Python packages..."
 
 pip3 install --upgrade pip
+
+
+#########################################
+# Add Personal Github Repos to Projects #
+#########################################
+
+cd ~/Projects/
+
+# Personal Portfolio Project
+git clone git@github.com:zackcpetersen/portfolio.git
+
+# Custom bash scripts
+git clone git@github.com:zackcpetersen/bash_scripts.git
+
+# Coding Challenges
+git clone git@github.com:zackcpetersen/coding_challenges.git
+
+# Data Structures and Algorithms
+git clone git@github.com:zackcpetersen/data_structures_algorithms.git
+
+# Raspberry Pi
+git clone git@github.com:zackcpetersen/raspberry_pi.git
+
+# This very setup script
+git clone git@github.com:zackcpetersen/computer_setup.git
+
 
 
 ###############################
@@ -281,7 +282,7 @@ read -p "Do you want to setup projects for Neutron, Positron, and Proton? [y/n]"
 if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
   echo "Installing project - Neutron"
   echo "Where would you like to clone ORIGIN from?"
-  read -p "(Please insert the full copied URL for the NEUTRON (Proton V2) Project)" neutron_origin
+  read -p "(Please insert the full copied URL for the NEUTRON (Proton V2) Project) -- SSH --" neutron_origin
   read -p "What would you like your remote to be called? (usually your name)" neutron_remote_name
   read -p "Please insert the full copied URL for your NEUTRON (Proton V2) Project REMOTE" neutron_remote_loc
 
@@ -295,11 +296,14 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     pyenv local 3.8.1
     pipenv install --python ~/.pyenv/versions/3.8.1/bin/python
     echo "You will still need to setup your pipenv interpreter in PyCharm!"
-    echo "https://slimwiki.com/neutron-interactive/setting-up-pipenv-environment-in-pycharm"
+    cecho "https://slimwiki.com/neutron-interactive/setting-up-pipenv-environment-in-pycharm" $blue
+    echo "Type yes when ready to continue"
+    read -r pause
     cd "$HOME/Projects"
   fi
 
-  read -p "Please insert the full copied URL for the Positron Project" positron_origin
+  echo "Installing project - Positron"
+  read -p "Please insert the full copied URL for the Positron Project -- SSH --" positron_origin
   read -p "What would you like your remote to be called? (usually your name)" positron_remote_name
   read -p "Please insert the full copied URL for your POSITRON Project REMOTE" positron_remote_loc
   git clone "$positron_origin"
@@ -312,54 +316,18 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
     source venv/bin/activate
     pip install -r requirements.pip
     deactivate
-    touch "dev_local.py"
-cat << _EOF_ >> dev_local.py
-import os
-
-CELERY_ALWAYS_EAGER = True
-COMPRESS_ENABLED = False
-SECURE_SSL_REDIRECT = False
-PREPEND_WWW = False
-# PROTON_BASE_URL = 'http://127.0.0.1:7999'
-PROTON_BASE_URL = 'http://proton.neutroninteractive.com'
-LOG_LOCATION = os.environ.get("POSITRON_LOG_LOCATION", "$HOME/Projects/positron/logs")
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'positron',
-        'USER': 'positron',
-        'PASSWORD': 'positron',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-
-# Log Settings
-LOGGING = {}
-_EOF_
     cd "$HOME/Projects"
   fi
 
   read -p "Please insert the full copied URL for the Proton (Proton V1) Project" proton_origin
+  read -p "What would you like your remote to be called? (usually your name)" proton_remote_name
+  read -p "Please insert the full copied URL for your PROTON Project REMOTE" proton_remote_loc
   git clone "$proton_origin"
   if [[ -d "$HOME/Projects/proton/" ]]; then
     cd "$HOME/Projects/proton/"
+    git remote add "$proton_remote_name" "$proton_remote_loc"
     pyenv local 2.7.3
     echo "Proton virutalenv setup varies - this will have to be done manually"
-    cd "/proton/settings/"
-    touch "dev_local.py"
-cat << _EOF_ >> dev_local.py
-import os
-
-LOG_LOCATION = os.environ.get("PROTON_LOG_LOCATION", "/Users/zachpeterson/Projects/proton/")
-SHOULD_QUEUE_DELIVERY_STAGES = False
-
-LOGGING = {}
-
-MONGO_HOST = '0.0.0.0'
-MONGO_PORT = 32768
-_EOF_
     cd "$HOME/Projects"
   fi
 fi
@@ -390,9 +358,6 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool true
 
-# Automatically hide and show the Dock
-defaults write com.apple.dock autohide -bool true
-
 # Don’t show recent applications in Dock
 defaults write com.apple.dock show-recents -bool false
 
@@ -422,13 +387,6 @@ defaults write com.apple.screencapture location -string "$HOME/Desktop"
 
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
-
-###############################################################################
-# Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
-###############################################################################
-
-# Use plain text mode for new TextEdit documents
-defaults write com.apple.TextEdit RichText -int 0
 
 # Load new settings before rebuilding the index
 killall mds
@@ -461,10 +419,6 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 # Disable the all too sensitive backswipe on trackpads
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
 
-# TODO:
-####
-
-
 
 echo ""
 cecho "Done!" $cyan
@@ -477,7 +431,7 @@ cecho "Note that some of these changes require a logout/restart to take effect."
 cecho "####### TODO #######" $cyan
 cecho "Remember to install oh my zsh and follow this guide! https://www.sitepoint.com/zsh-tips-tricks/" $cyan
 cecho "Configure PyCharm Intrepeters, configs, & settings"
-cecho "Setup remotes for all github projects"
+cecho "Check remotes for all github projects"
 cecho "Create and setup Proton (V1) virtualenv"
 echo ""
 echo ""
