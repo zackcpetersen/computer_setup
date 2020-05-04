@@ -168,41 +168,10 @@ brew cask install slack
 ### Run Brew Cleanup
 brew cleanup
 
-#########################################
-# Add Personal Github Repos to Projects #
-#########################################
+###########################
+# Setting Up Projects Dir #
+###########################
 
-cd ~/Projects/
-
-# Personal Portfolio Project
-git clone git@github.com:zackcpetersen/portfolio.git
-
-# Custom bash scripts
-git clone git@github.com:zackcpetersen/bash_scripts.git
-
-# Coding Challenges
-git clone git@github.com:zackcpetersen/coding_challenges.git
-
-# Data Structures and Algorithms
-git clone git@github.com:zackcpetersen/data_structures_algorithms.git
-
-# Raspberry Pi
-git clone git@github.com:zackcpetersen/raspberry_pi.git
-
-# This very setup script
-git clone git@github.com:zackcpetersen/computer_setup.git
-
-# Custom iterm2 settings
-git clone git@github.com:zackcpetersen/iterm2_settings.git
-
-# Custom Neutron Scripts
-git clone git@github.com:zackcpetersen/neutron_scripts.git
-
-
-
-###############################
-# Setting Up Neutron Projects #
-###############################
 
 if [[ ! -d "$HOME/Projects" ]]; then
   echo "############ Creating PROJECTS Directory - $HOME/Projects/ ############"
@@ -213,6 +182,61 @@ fi
 
 echo "############ Navigating to PROJECTS Directory to setup Neutron Projects ############"
 cd "$HOME/Projects"
+
+
+#########################################
+# Add Personal Github Repos to Projects #
+#########################################
+
+cd ~/Projects/
+
+# Personal Portfolio Project
+git clone git@github.com:zackcpetersen/portfolio.git
+cd portfolio
+git remote rename origin zack
+cd ~/Projects
+
+# Custom bash scripts
+git clone git@github.com:zackcpetersen/bash_scripts.git
+cd bash_scripts
+git remote rename origin zack
+cd ~/Projects
+
+# Coding Challenges
+git clone git@github.com:zackcpetersen/coding_challenges.git
+cd coding_challenges
+git remote rename origin zack
+cd ~/Projects
+
+# Data Structures and Algorithms
+git clone git@github.com:zackcpetersen/data_structures_algorithms.git
+cd data_structures_algorithms
+git remote rename origin zack
+cd ~/Projects
+
+# Raspberry Pi
+git clone git@github.com:zackcpetersen/raspberry_pi.git
+cd raspberry_pi
+git remote rename origin zack
+cd ~/Projects
+
+# This very setup script
+git clone git@github.com:zackcpetersen/computer_setup.git
+cd computer_setup
+git remote rename origin zack
+cd ~/Projects
+
+# Custom iterm2 settings
+git clone git@github.com:zackcpetersen/iterm2_settings.git
+cd iterm2_settings
+git remote rename origin zack
+cd ~/Projects
+
+# Custom Neutron Scripts
+git clone git@github.com:zackcpetersen/neutron_scripts.git
+cd neutron_scripts
+git remote rename origin zack
+cd ~/Projects
 
 ##############################
 # Pyenv Settings             #
