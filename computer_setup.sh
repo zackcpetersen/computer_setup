@@ -127,60 +127,25 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 # Create .zprofile
 echo "############ Creating .zprofile && adding settings ############"
 touch ~/.zprofile
-
-# add to .zprofile
-cat << _EOF_ >> ~/.zprofile
-# virtualenv setup
-source /usr/local/bin/virtualenvwrapper.sh
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"
-export PATH=$PATH:/usr/local/Cellar/openssl/1.0.2r/bin/
-export PATH=$PATH:/usr/local/Cellar/postgresql\@9.6/9.6.13/bin/
-
-# Fixing 'Locale Error' - UTF-8
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-#Pyenv PATH
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# Setting path for custom shell functions
-export PATH="$PATH:~/Projects/bash_scripts/"
-export PATH="$PATH:~/Projects/computer_setup/"
-export PATH="$PATH:~/Projects/neutron_scripts/"
-
-# PATH for pipenv
-export PATH="$PATH:~/.local/bin"
-
-# alias for postgres docker container
-alias positron_database="sudo docker run --rm --name=pg-docker-9.3 -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v ~/Library/Developer/docker/volumes/postgres:/var/lib/postgresql/data postgres:9.3"
-
-# alias for back command
-alias back="source back"
-
-# alias for stat command
-# alias stat="stat -x"
-
-# alias for history search
-alias hs="history | grep"
-
-# alias for export DJANGO_SETTINGS_MODULE
-alias dj_settings="export DJANGO_SETTINGS_MODULE="
-
-# alias for starting proton tenant_command shell inside pipenv shell
-alias proton_shell="pipenv shell 'python manage.py tenant_command shell --schema=neutron'"
-
-# alias for deleting all migrations in current directory
-alias delete_migrations="find . -path '*/migrations/*.py' -not -name '__init__.py' -delete"
-
-_EOF_
+echo "You will need to copy zprofile settings from github - you can do this now or later"
+echo "https://github.com/zackcpetersen/zprofile"
+read -r pause
 
 
 ##############################
 # Install via Brew           #
 ##############################
+
+### Python
+pip3 install python
+pip3 install --upgrade pip
+pip install virtualenv
+brew install pyenv
+brew install pipenv
+brew install pyenv-virtualenv
+brew install pyenv-virtualenvwrapper
+brew install postgresql
+brew install openvpn
 
 echo "############ Starting brew app install ############"
 
@@ -202,25 +167,6 @@ brew cask install slack
 
 ### Run Brew Cleanup
 brew cleanup
-
-# pip packages
-pip install virtualenv
-pip install virtualenvwrapper
-
-### Python
-pip3 install python
-pip3 install pyenv
-pip3 install pipenv
-
-
-######################################
-# Install few global python packages #
-######################################
-
-echo "Installing global Python packages..."
-
-pip3 install --upgrade pip
-
 
 #########################################
 # Add Personal Github Repos to Projects #
@@ -248,6 +194,9 @@ git clone git@github.com:zackcpetersen/computer_setup.git
 
 # Custom iterm2 settings
 git clone git@github.com:zackcpetersen/iterm2_settings.git
+
+# Custom Neutron Scripts
+git clone git@github.com:zackcpetersen/neutron_scripts.git
 
 
 
@@ -329,8 +278,12 @@ if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
   if [[ -d "$HOME/Projects/proton/" ]]; then
     cd "$HOME/Projects/proton/"
     git remote add "$proton_remote_name" "$proton_remote_loc"
-    pyenv local 2.7.3
-    echo "Proton virutalenv setup varies - this will have to be done manually"
+    virtualenv --python=/usr/bin/python2.7 venv
+    source venv/bin/activate
+    pip install -r dev_requirements.txt
+    pip install -r REQUIREMENTS.pip
+    deactivate
+    echo "DOUBLE CHECK PROTON VIRTUALENV SETUP"
     cd "$HOME/Projects"
   fi
 fi
