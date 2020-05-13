@@ -165,6 +165,8 @@ brew cask install alfred
 brew cask install flux
 brew cask install slack
 
+brew install node
+
 ### Run Brew Cleanup
 brew cleanup
 
