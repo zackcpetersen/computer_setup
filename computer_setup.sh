@@ -193,6 +193,7 @@ cd "$HOME/Projects"
 cd ~/Projects/
 
 # Personal Portfolio Project
+## REMEMBER THAT YOU NEED TO SETUP FIREBASE CONFIG AGAIN!
 git clone git@github.com:zackcpetersen/portfolio.git
 cd portfolio
 git remote rename origin zack
